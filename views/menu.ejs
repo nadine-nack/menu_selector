@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe List</title>
+    <style>
+        /* CSS to create columns */
+        .ingredient-container {
+            column-count: 3; /* Adjust the number of columns as needed */
+            column-gap: 20px; /* Adjust the gap between columns as needed */
+        }
+
+        .ingredient-item {
+            margin-bottom: 10px; /* Adjust the spacing between items as needed */
+        }
+    </style>
+</head>
+<body>
+<h1>Recipe List</h1>
+<label for="filterInput">Filter by Category:</label>
+<select id="filterInput">
+    <option value="">Show All</option>
+    <% for (var i = 0; i < collections.length; i++) { %>
+        <option value="<%= collections[i].identifier %>" data-recipe-ids="<%= collections[i].recipeIds %>"><%= collections[i].name %></option>
+    <% } %>
+</select>
+<% for (var i = 0; i < recipes.length; i++) { %>
+<div id="<%= recipes[i].identifier %>" class="recipe">
+    <h2><input type="checkbox" name="recipe1_ingredient_<%= recipes[i].id %>"/><label><%= recipes[i].name %></label></h2>
+    <div class="ingredient-container">
+    <% for (var j = 0; j < recipes[i].ingredients.length; j++) { %>
+        <div class="ingredient-item"><%= recipes[i].ingredients[j].name %></div>
+    <% } %>
+    </div>
+</div>
+<% } %>
+<script>
+    const categoryInput = document.getElementById('filterInput');
+    const recipes = document.querySelectorAll('.recipe');
+
+    categoryInput.addEventListener('change', function () {
+        const selectedOption = categoryInput.options[categoryInput.selectedIndex];
+        const selectedRecipeIds = selectedOption.getAttribute('data-recipe-ids').split(',');
+
+        // Display all recipes
+        recipes.forEach(recipe => {
+            if (selectedRecipeIds === null) {
+                // reset to view all
+                recipe.style.display = 'block';
+            } else {
+                recipe.style.display = 'none';
+            }
+        });
+
+        if (selectedRecipeIds !== null ) {
+            selectedRecipeIds.forEach(selectedId => {
+                const selectedRecipe = document.getElementById(selectedId);
+                if (selectedRecipe !== null) {
+                    selectedRecipe.style.display = 'block';
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
